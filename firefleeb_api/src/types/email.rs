@@ -5,12 +5,12 @@ use regex::Regex;
 use diesel::deserialize::{self, FromSql};
 use diesel::serialize::{self, IsNull, Output, ToSql};
 use diesel::pg::{Pg, PgValue};
-use diesel::{FromSqlRow, AsExpression};
+use diesel::{FromSqlRow, AsExpression, QueryId};
 use diesel::sql_types::Text;
 use std::io::Write;
 
 
-#[derive(Debug, Clone, Serialize, Deserialize, Eq, PartialEq, Hash, FromSqlRow, AsExpression)]
+#[derive(Debug, Clone, Serialize, Deserialize, Eq, PartialEq, Hash, FromSqlRow, AsExpression, QueryId)]
 #[diesel(sql_type = Text)]
 pub struct Email(String);
 
