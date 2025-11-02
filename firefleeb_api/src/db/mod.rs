@@ -1,5 +1,5 @@
 use diesel::pg::PgConnection;
-use diesel::r2d2::{ConnectionManager, Pool, PooledCOnnection};
+use diesel::r2d2::{ConnectionManager, Pool, PooledConnection};
 use diesel_migrations::{embed_migrations, EmbeddedMigrations, MigrationHarness};
 
 pub const MIGRATIONS: EmbeddedMigrations = embed_migrations!();
@@ -20,7 +20,7 @@ pub fn get_conn(pool: &PgPool) -> Result<PooledConnection<ConnectionManager<PgCo
 }
 
 /// Run pending database migrations
-pub fn run_migrations(conn: &mut PgConnection) -> Result<(), diesel_migrations::MigrationError> {
+pub fn run_migrations(conn: &mut PgConnection) -> Result<(), Box<dyn std::error::Error + Send + Sync>> {
     conn.run_pending_migrations(MIGRATIONS).map(|_| ())
 }
 
