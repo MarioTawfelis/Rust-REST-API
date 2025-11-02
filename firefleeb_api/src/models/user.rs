@@ -27,6 +27,7 @@ pub struct NewUser {
 #[derive(Debug, AsChangeset, Serialize, Deserialize)]
 #[diesel(table_name = users)]
 pub struct UpdateUser {
+    pub email: Option<Email>,
     pub password_hash: Option<String>,
 }
 
