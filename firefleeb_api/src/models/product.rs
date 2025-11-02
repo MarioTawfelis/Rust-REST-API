@@ -1,7 +1,10 @@
+use diesel::prelude::*;
 use serde::{Deserialize, Serialize};
 
+use crate::schema::products;
+
 #[derive(Debug, Queryable, Identifiable, Serialize, Deserialize)]
-#[table_name = "products"]
+#[diesel(table_name = products)]
 pub struct Product {
     pub id: uuid::Uuid,
     pub product_name: String,

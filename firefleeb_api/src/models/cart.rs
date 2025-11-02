@@ -1,16 +1,17 @@
 use chrono::{DateTime, Utc};
+use diesel::prelude::*;
+use serde::{Deserialize, Serialize};
 use uuid::Uuid;
 
 use crate::schema::carts;
-
-use serde::{Deserialize, Serialize};
+use crate::models::user::User;
 
 #[derive(Debug, Queryable, Identifiable, Associations, Serialize, Deserialize)]
-#[belongs_to(User)]
-#[table_name = "carts"]
+#[diesel(belongs_to(User))]
+#[diesel(table_name = carts)]
 pub struct Cart {
-    pub id: uuid::Uuid,
-    pub user_id: uuid::Uuid,
+    pub id: Uuid,
+    pub user_id: Uuid,
     pub cart_status: String,
-    pub created_at: Option<chrono::DateTime<chrono::Utc>>,
+    pub created_at: Option<DateTime<Utc>>,
 }

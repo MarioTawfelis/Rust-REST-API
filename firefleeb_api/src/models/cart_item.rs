@@ -1,17 +1,16 @@
+use bigdecimal::BigDecimal;
 use chrono::{DateTime, Utc};
+use diesel::prelude::*;
 use serde::{Deserialize, Serialize};
 use uuid::Uuid;
-use bigdecimal::BigDecimal;
 
+use crate::models::{cart::Cart, product::Product};
 use crate::schema::cart_items;
 
-use crate::models::cart::Cart;
-use crate::models::product::Product;
-
 #[derive(Debug, Queryable, Identifiable, Associations, Serialize, Deserialize)]
-#[belongs_to(Cart)]
-#[belongs_to(Product, foreign_key = "item_id")]
-#[table_name = "cart_items"]
+#[diesel(belongs_to(Cart))]
+#[diesel(belongs_to(Product, foreign_key = item_id))]
+#[diesel(table_name = cart_items)]
 pub struct CartItem {
     pub id: Uuid,
     pub item_id: Uuid,
@@ -22,7 +21,7 @@ pub struct CartItem {
 }
 
 #[derive(Debug, Insertable, Serialize, Deserialize)]
-#[table_name = "cart_items"]
+#[diesel(table_name = cart_items)]
 pub struct NewCartItem {
     pub item_id : Uuid,
     pub cart_id : Uuid,
@@ -31,7 +30,7 @@ pub struct NewCartItem {
 }
 
 #[derive(Debug, AsChangeset, Serialize, Deserialize)]
-#[table_name = "cart_items"]
+#[diesel(table_name = cart_items)]
 pub struct UpdateCartItem {
     pub quantity : Option<i32>,
     pub unit_price : Option<BigDecimal>
@@ -42,7 +41,7 @@ pub struct CartItemResponse {
     pub id: Uuid,
     pub item_id: Uuid,
     pub cart_id: Uuid,
-    pub quantity i32,
+    pub quantity: i32,
     pub unit_price: BigDecimal,
     pub total_price: BigDecimal, // quantity * unit_price
     pub created_at: Option<DateTime<Utc>>,
@@ -55,7 +54,7 @@ impl CartItem {
     }
 
     // Convert to response struct
-    pub fun to_response(&self) -> CartItemResposne {
+    pub fn to_response(&self) -> CartItemResponse {
         CartItemResponse {
             id: self.id,
             item_id: self.item_id,
