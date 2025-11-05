@@ -1,4 +1,4 @@
-use bigfecimal::BigDecimal;
+use bigdecimal::BigDecimal;
 use chrono::{DateTime, Utc};
 use uuid::Uuid;
 
