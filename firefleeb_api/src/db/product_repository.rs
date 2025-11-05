@@ -1,5 +1,4 @@
 use uuid::Uuid;
-use bigdecimal::BigDecimal;
 
 use diesel::prelude::*;
 use diesel::{QueryResult, PgConnection};
