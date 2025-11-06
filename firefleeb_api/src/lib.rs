@@ -5,6 +5,7 @@ pub mod types;
 pub mod handlers;
 pub mod routes;
 pub mod services;
+pub mod errors;
 
 // Re-export submodules you need from models/db:
 pub use db::*;
@@ -13,3 +14,4 @@ pub use types::*;
 pub use routes::*;
 pub use handlers::*;
 pub use services::*;
+pub use errors::*;
