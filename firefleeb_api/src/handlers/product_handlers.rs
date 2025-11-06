@@ -35,3 +35,16 @@ pub async fn update_product_handler(
     let product = product_service::update_product(pool, product_id, updated_product).await?;
     Ok(reply::json(ProductResponse::from(product)))
 }
+
+pub async fn get_product_by_id_handler(pool: PgPool, id: Uuid) -> Result<impl Reply, AppError> {
+    let product = product_service::get_product(pool, id).await?;
+    Ok(warp::reply::json(&ProductResponse::from(product)))
+}
+
+pub async fn delete_product_handler(pool: PgPool, id: Uuid) -> Result<impl Reply, AppError> {
+    product_service::delete_product(pool, id).await?;
+    Ok(warp::reply::with_status(
+        warp::reply::json(&serde_json::json!({"message": "deleted"})),
+        warp::http::StatusCode::NO_CONTENT,
+    ))
+}
