@@ -1,5 +1,3 @@
-use diesel::result::{DatabaseErroKind, Error as DieseError};
-
 use uuid::Uuid;
 
 use crate::db::product_repository;
@@ -7,13 +5,15 @@ use crate::db::{with_conn, PgPool};
 
 use crate::errors::AppError;
 
+use crate::errors::map_diesel_error;
+
 use crate::models::product::{NewProduct, UpdateProduct, Product};
 
 pub async fn create_product(
     pool: PgPool,
     new_product: NewProduct
 ) -> Result<Product, AppError> {
-    with_conn(pool, |conn| {
+    with_conn(pool, move |conn| {
         product_repository::create_product(conn, &new_product)
     })
     .await
@@ -24,7 +24,7 @@ pub async fn get_product_by_id(
     pool: PgPool,
     product_id: Uuid,
 ) -> Result<Product, AppError> {
-    let maybe_product = with_conn(pool, |conn| {
+    let maybe_product = with_conn(pool, move |conn| {
         product_repository::get_product_by_id(conn, product_id)
     })
     .await
@@ -38,7 +38,7 @@ pub async fn update_product(
     product_id: Uuid,
     updated: UpdateProduct
 ) -> Result<Product, AppError> {
-    with_conn(pool, |conn| {
+    with_conn(pool, move |conn| {
         product_repository::update_product(conn, product_id, &updated)
     })
     .await
@@ -49,7 +49,7 @@ pub async fn delete_product(
     pool: PgPool,
     product_id: Uuid,
 ) -> Result<(), AppError> {
-    with_conn(pool, |conn| {
+    with_conn(pool, move |conn| {
         product_repository::delete_product(conn, product_id)
     })
     .await

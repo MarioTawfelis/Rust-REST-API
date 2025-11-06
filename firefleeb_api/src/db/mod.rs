@@ -30,7 +30,7 @@ pub fn run_migrations(conn: &mut PgConnection) -> Result<(), Box<dyn std::error:
 }
 
 
-/// The below code is not my own///
+// The below code is not my own
 /// Bridge sync Diesel calls onto a blocking thread for async runtimes (Warp/Tokio).
 ///
 /// Usage:
