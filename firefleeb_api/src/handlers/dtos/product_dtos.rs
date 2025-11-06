@@ -4,6 +4,8 @@ use uuid::Uuid;
 
 use serde::{Deserialize, Serialize};
 
+use crate::models::product::Product;
+
 #[derive(Debug, Deserialize)]
 pub struct CreateProductRequest {
     pub product_name: String,
@@ -28,4 +30,17 @@ pub struct ProductResponse {
     pub price: BigDecimal,
     pub stock: i32,
     pub created_at: Option<DateTime<Utc>>,
+}
+
+impl From<Product> for ProductResponse {
+    fn from(m: Product) -> Self {
+        Self {
+            id: m.id,
+            product_name: m.product_name,
+            product_description: m.product_description,
+            price: m.price,
+            stock: m.stock,
+            created_at: m.created_at,
+        }
+    }
 }
