@@ -1,3 +1,5 @@
+use core::str;
+
 use chrono::{DateTime, Utc};
 use diesel::prelude::*;
 use serde::{Deserialize, Serialize};
@@ -14,6 +16,19 @@ pub struct Cart {
     pub user_id: Uuid,
     pub cart_status: String,
     pub created_at: Option<DateTime<Utc>>,
+}
+
+#[derive(Debug, Insertable, Serialize, Deserialize)]
+#[diesel(table_name = carts)]
+pub struct NewCart {
+    pub user_id: Uuid,
+    pub cart_status: String,
+}
+
+#[derive(Debug, AsChangeset, Serialize, Deserialize)]
+#[diesel(table_name = carts)]
+pub struct UpdateCart {
+    pub cart_status: Option<String>,
 }
 
 #[derive(Debug, Serialize)]
