@@ -5,6 +5,8 @@ use diesel_migrations::{embed_migrations, EmbeddedMigrations, MigrationHarness};
 pub mod user_repository;
 pub use user_repository::*;
 
+pub mod product_repository;
+
 pub const MIGRATIONS: EmbeddedMigrations = embed_migrations!();
 
 pub type PgPool = Pool<ConnectionManager<PgConnection>>;
@@ -28,7 +30,7 @@ pub fn run_migrations(conn: &mut PgConnection) -> Result<(), Box<dyn std::error:
 }
 
 
-/// The below code is not my own///
+// The below code is not my own
 /// Bridge sync Diesel calls onto a blocking thread for async runtimes (Warp/Tokio).
 ///
 /// Usage:

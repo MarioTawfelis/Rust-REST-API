@@ -2,9 +2,11 @@ use std::convert::Infallible;
 use std::fmt;
 use warp::http::StatusCode;
 use warp::reply::{json, with_status, Response};
-use warp::{Rejection, Reply};
+use warp::Reply;
+use diesel::result::{DatabaseErrorKind, Error as DieselError};
 
-#[derive(Debug)]
+
+#[derive(Debug, Clone)]
 pub enum AppError {
     Validation(String),
     Unauthorized(String),
@@ -12,6 +14,17 @@ pub enum AppError {
     NotFound(String),
     Db(String),
     Internal(String),
+}
+
+
+// Map Diesel errors into our AppError type consistently.
+pub fn map_diesel_error(err: DieselError) -> AppError {
+	match err {
+		DieselError::DatabaseError(DatabaseErrorKind::UniqueViolation, _) => {
+			AppError::Conflict("Unique constraint violation".into())
+		}
+		other => AppError::Db(format!("Database error: {other}")),
+	}
 }
 
 impl fmt::Display for AppError {
@@ -28,6 +41,8 @@ impl fmt::Display for AppError {
 }
 
 impl std::error::Error for AppError {}
+
+impl warp::reject::Reject for AppError {}
 
 /// Convert AppError → HTTP JSON reply for Warp
 impl Reply for AppError {
