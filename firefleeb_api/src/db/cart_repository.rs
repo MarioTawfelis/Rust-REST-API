@@ -15,12 +15,12 @@ pub fn create_cart(
         .get_result(conn)
     }
 
-pub fn get_cart_by_id(
+pub fn get_cart_by_user_id(
     conn: &mut PgConnection,
-    cart_id: Uuid,
+    user_id: Uuid,
 ) -> QueryResult<Option<Cart>> {
     carts::table
-        .filter(carts::id.eq(cart_id))
+        .filter(carts::user_id.eq(user_id))
         .first::<Cart>(conn)
         .optional()
 }
