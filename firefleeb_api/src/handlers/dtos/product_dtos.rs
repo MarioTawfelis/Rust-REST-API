@@ -22,7 +22,7 @@ pub struct UpdateProductRequest {
     pub stock: Option<i32>,
 }
 
-#[derive(Debug, Serialize)]
+#[derive(Debug, Serialize, Deserialize)]
 pub struct ProductResponse {
     pub id: Uuid,
     pub product_name: String,
