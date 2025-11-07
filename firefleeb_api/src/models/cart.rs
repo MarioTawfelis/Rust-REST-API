@@ -9,15 +9,15 @@ use bigdecimal::BigDecimal;
 use crate::schema::carts;
 use crate::models::user::User;
 
-#[derive(Debug, Queryable, Identifiable, Associations, Serialize, Deserialize)]
+#[derive(Debug, Queryable, Selectable, Identifiable, Associations, Serialize, Deserialize)]
 #[diesel(belongs_to(User))]
 #[diesel(table_name = carts)]
 pub struct Cart {
     pub id: Uuid,
     pub user_id: Uuid,
     pub cart_status: String,
-    pub cart_total: BigDecimal,
     pub created_at: Option<DateTime<Utc>>,
+    pub cart_total: BigDecimal,
 }
 
 #[derive(Debug, Insertable, Serialize, Deserialize)]
