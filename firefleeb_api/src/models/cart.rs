@@ -15,3 +15,11 @@ pub struct Cart {
     pub cart_status: String,
     pub created_at: Option<DateTime<Utc>>,
 }
+
+#[derive(Debug, Serialize)]
+pub struct CartResponse {
+    pub id: Uuid,
+    pub user_id: Uuid,
+    pub cart_status: String,
+    pub created_at: Option<DateTime<Utc>>,
+}
