@@ -7,14 +7,20 @@ use diesel::{QueryResult, PgConnection};
 use crate::models::cart::{Cart, NewCart, UpdateCart};
 use crate::schema::carts;
 
-pub fn create_cart(
+pub fn create_default_cart(
     conn: &mut PgConnection,
-    new_cart: &NewCart,
+    user_id: Uuid,
 ) -> QueryResult<Cart> {
+    let new_cart = NewCart {
+        user_id,
+        cart_status: "active".into(),
+        cart_total: BigDecimal::from(0),
+    };
+
     diesel::insert_into(carts::table)
-        .values(new_cart)
-        .get_result(conn)
-    }
+        .values(&new_cart)
+        .get_result::<Cart>(conn)
+}
 
 pub fn get_cart_by_id(
     conn: &mut PgConnection,

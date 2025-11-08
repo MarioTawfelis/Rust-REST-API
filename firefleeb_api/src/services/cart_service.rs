@@ -4,14 +4,14 @@ use crate::db::cart_repository;
 use crate::db::{with_conn, PgPool};
 use crate::errors::AppError;
 use crate::errors::map_diesel_error;
-use crate::models::cart::{NewCart, UpdateCart, Cart};
+use crate::models::cart::{UpdateCart, Cart};
 
-pub async fn create_cart(
+pub async fn create_default_cart(
     pool: PgPool,
-    new_cart: NewCart,
+    user_id: Uuid,
 ) -> Result<Cart, AppError> {
     with_conn(pool, move |conn| {
-        cart_repository::create_cart(conn, &new_cart)
+        cart_repository::create_default_cart(conn, user_id)
     })
     .await
     .map_err(map_diesel_error)

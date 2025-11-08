@@ -1,5 +1,5 @@
 use crate::handlers::dtos::{CreateCartRequest, UpdateCartRequest, CartResponse};
-use crate::models::cart::{NewCart, UpdateCart};
+use crate::models::cart::{UpdateCart};
 use crate::services::cart_service;
 use crate::errors::AppError;
 use crate::db::PgPool;
@@ -10,13 +10,8 @@ pub async fn create(
     pool: PgPool,
     req: CreateCartRequest
 ) -> Result<impl Reply, AppError> {
-    let new_cart = NewCart {
-        user_id: req.user_id,
-        cart_status: req.cart_status,
-        cart_total: req.cart_total,
-    };
 
-    let cart = cart_service::create_cart(pool, new_cart).await?;
+    let cart = cart_service::create_default_cart(pool, req.user_id).await?;
     Ok(reply::json(&CartResponse::from(cart)))
 }
 
