@@ -1,0 +1,2 @@
+ALTER TABLE cart_items
+DROP CONSTRAINT uq_cart_items_cart_product;
