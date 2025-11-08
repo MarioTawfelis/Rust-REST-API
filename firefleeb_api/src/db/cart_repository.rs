@@ -1,3 +1,4 @@
+use bigdecimal::BigDecimal;
 use uuid::Uuid;
 
 use diesel::prelude::*;
@@ -14,6 +15,16 @@ pub fn create_cart(
         .values(new_cart)
         .get_result(conn)
     }
+
+pub fn get_cart_by_id(
+    conn: &mut PgConnection,
+    cart_id: Uuid,
+) -> QueryResult<Option<Cart>> {
+    carts::table
+        .find(cart_id)
+        .first::<Cart>(conn)
+        .optional()
+}
 
 pub fn get_active_by_user_id(
     conn: &mut PgConnection,
@@ -33,6 +44,16 @@ pub fn update_cart(
 ) -> QueryResult<Cart> {
     diesel::update(carts::table.find(cart_id))
         .set(updated)
+        .get_result(conn)
+}
+
+pub fn update_cart_total(
+    conn: &mut PgConnection,
+    cart_id: Uuid,
+    new_total: &BigDecimal,
+) -> QueryResult<Cart> {
+    diesel::update(carts::table.find(cart_id))
+        .set(carts::cart_total.eq(new_total))
         .get_result(conn)
 }
 
