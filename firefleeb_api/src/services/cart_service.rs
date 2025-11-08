@@ -17,12 +17,12 @@ pub async fn create_cart(
     .map_err(map_diesel_error)
 }
 
-pub async fn get_cart_by_user_id(
+pub async fn get_active_by_user_id(
     pool: PgPool,
     user_id: Uuid,
 ) -> Result<Cart, AppError> {
     let maybe_cart = with_conn(pool, move |conn|{
-        cart_repository::get_cart_by_user_id(conn, user_id)
+        cart_repository::get_active_by_user_id(conn, user_id)
     })
     .await
     .map_err(map_diesel_error)?;
