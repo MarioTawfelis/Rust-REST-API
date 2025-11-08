@@ -23,20 +23,20 @@ pub struct CartItem {
 #[derive(Debug, Insertable, Serialize, Deserialize)]
 #[diesel(table_name = cart_items)]
 pub struct NewCartItem {
-    pub item_id : Uuid,
-    pub cart_id : Uuid,
-    pub quantity : i32,
-    pub unit_price : BigDecimal
+    pub item_id: Uuid,
+    pub cart_id: Uuid,
+    pub quantity: i32,
+    pub unit_price: BigDecimal,
 }
 
 #[derive(Debug, AsChangeset, Serialize, Deserialize)]
 #[diesel(table_name = cart_items)]
 pub struct UpdateCartItem {
-    pub quantity : Option<i32>,
-    pub unit_price : Option<BigDecimal>
+    pub quantity: Option<i32>,
+    pub unit_price: Option<BigDecimal>,
 }
 
-#[derive(Debug, Serialize)]
+#[derive(Debug, Serialize, Deserialize)]
 pub struct CartItemResponse {
     pub id: Uuid,
     pub item_id: Uuid,
