@@ -16,6 +16,7 @@ pub fn cart_routes(
     // POST /carts
     let create = warp::post()
         .and(base.clone())
+        .and(warp::path::end())
         .and(with_pool(pool.clone()))
         .and(json_body::<CreateCartRequest>())
         .and_then(|pool, req| async move {
@@ -28,6 +29,7 @@ pub fn cart_routes(
     let update = warp::put()
         .and(base.clone())
         .and(warp::path::param::<Uuid>())
+        .and(warp::path::end())
         .and(with_pool(pool.clone()))
         .and(json_body::<UpdateCartRequest>())
         .and_then(|id, pool, req| async move {
@@ -38,7 +40,11 @@ pub fn cart_routes(
 
     // GET /carts/:id
     let get_one = warp::get()
-        .and(base.clone().and(warp::path::param::<Uuid>()))
+        .and(
+            base.clone()
+                .and(warp::path::param::<Uuid>())
+                .and(warp::path::end()),
+        )
         .and(with_pool(pool.clone()))
         .and_then(|id, pool| async move {
             cart_handlers::get(pool, id)
@@ -48,7 +54,11 @@ pub fn cart_routes(
 
     // DELETE /carts/:id
     let delete = warp::delete()
-        .and(base.clone().and(warp::path::param::<Uuid>()))
+        .and(
+            base.clone()
+                .and(warp::path::param::<Uuid>())
+                .and(warp::path::end()),
+        )
         .and(with_pool(pool.clone()))
         .and_then(|id, pool| async move {
             cart_handlers::delete(pool, id)

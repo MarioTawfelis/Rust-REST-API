@@ -10,9 +10,11 @@ pub fn create_cart_item(
     conn: &mut PgConnection,
     new_cart_item: &NewCartItem,
 ) -> QueryResult<CartItem> {
+    dbg!(new_cart_item);
     diesel::insert_into(cart_items::table)
         .values(new_cart_item)
         .get_result::<CartItem>(conn)
+        .inspect_err(|e| eprintln!("insert cart_item failed: {e:?}"))
 }
 
 /// Return all items for a cart
