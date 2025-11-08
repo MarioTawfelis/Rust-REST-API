@@ -2,7 +2,7 @@ use diesel::prelude::*;
 use diesel::{PgConnection, QueryResult};
 use uuid::Uuid;
 
-use crate::models::cart_item::{CartItem, NewCartItem};
+use crate::models::cart_item::{CartItem, NewCartItem, UpdateCartItem};
 use crate::schema::cart_items;
 
 /// Insert a new cart item row (no merging). Fails if (cart_id, item_id) already exists.
@@ -16,10 +16,7 @@ pub fn create_cart_item(
 }
 
 /// Return all items for a cart
-pub fn get_items_by_cart_id(
-    conn: &mut PgConnection,
-    cart_id: Uuid,
-) -> QueryResult<Vec<CartItem>> {
+pub fn get_items_by_cart_id(conn: &mut PgConnection, cart_id: Uuid) -> QueryResult<Vec<CartItem>> {
     cart_items::table
         .filter(cart_items::cart_id.eq(cart_id))
         .order_by(cart_items::created_at.asc().nulls_last())
@@ -62,6 +59,24 @@ pub fn set_item_quantity(
     .get_result::<CartItem>(conn)
 }
 
+/// Update quantity/unit price for a specific cart item.
+pub fn update_cart_item(
+    conn: &mut PgConnection,
+    cart_id: Uuid,
+    product_id: Uuid,
+    updated: &UpdateCartItem,
+) -> QueryResult<CartItem> {
+    use crate::schema::cart_items::dsl as ci;
+
+    diesel::update(
+        ci::cart_items
+            .filter(ci::cart_id.eq(cart_id))
+            .filter(ci::item_id.eq(product_id)),
+    )
+    .set(updated)
+    .get_result::<CartItem>(conn)
+}
+
 /// Remove one item row
 pub fn delete_item(conn: &mut PgConnection, cart_id: Uuid, product_id: Uuid) -> QueryResult<usize> {
     use crate::schema::cart_items::dsl as ci;
@@ -80,5 +95,3 @@ pub fn delete_all_for_cart(conn: &mut PgConnection, cart_id: Uuid) -> QueryResul
 
     diesel::delete(ci::cart_items.filter(ci::cart_id.eq(cart_id))).execute(conn)
 }
-
-

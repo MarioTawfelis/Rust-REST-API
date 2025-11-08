@@ -9,8 +9,6 @@ use crate::models::cart::Cart;
 #[derive(Debug, Deserialize)]
 pub struct CreateCartRequest {
     pub user_id: Uuid,
-    pub cart_status: String,
-    pub cart_total: BigDecimal,
 }
 
 #[derive(Debug, Deserialize)]
