@@ -35,7 +35,7 @@ pub async fn update(
 }
 
 pub async fn get(pool: PgPool, id: Uuid) -> Result<impl Reply, AppError> {
-    let cart = cart_service::get_cart_by_user_id(pool, id).await?;
+    let cart = cart_service::get_active_by_user_id(pool, id).await?;
     Ok(warp::reply::json(&CartResponse::from(cart)))
 }
 
