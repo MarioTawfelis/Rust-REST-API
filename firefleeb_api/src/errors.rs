@@ -1,10 +1,9 @@
+use diesel::result::{DatabaseErrorKind, Error as DieselError};
 use std::convert::Infallible;
 use std::fmt;
-use warp::http::StatusCode;
-use warp::reply::{json, with_status, Response};
 use warp::Reply;
-use diesel::result::{DatabaseErrorKind, Error as DieselError};
-
+use warp::http::StatusCode;
+use warp::reply::{Response, json, with_status};
 
 #[derive(Debug, Clone)]
 pub enum AppError {
@@ -16,15 +15,14 @@ pub enum AppError {
     Internal(String),
 }
 
-
 // Map Diesel errors into our AppError type consistently.
 pub fn map_diesel_error(err: DieselError) -> AppError {
-	match err {
-		DieselError::DatabaseError(DatabaseErrorKind::UniqueViolation, _) => {
-			AppError::Conflict("Unique constraint violation".into())
-		}
-		other => AppError::Db(format!("Database error: {other}")),
-	}
+    match err {
+        DieselError::DatabaseError(DatabaseErrorKind::UniqueViolation, _) => {
+            AppError::Conflict("Unique constraint violation".into())
+        }
+        other => AppError::Db(format!("Database error: {other}")),
+    }
 }
 
 impl fmt::Display for AppError {

@@ -1,11 +1,11 @@
 use diesel::pg::PgConnection;
 use diesel::r2d2::{ConnectionManager, Pool, PooledConnection};
-use diesel_migrations::{embed_migrations, EmbeddedMigrations, MigrationHarness};
+use diesel_migrations::{EmbeddedMigrations, MigrationHarness, embed_migrations};
 
-pub mod user_repository;
-pub mod product_repository;
-pub mod cart_repository;
 pub mod cart_item_repository;
+pub mod cart_repository;
+pub mod product_repository;
+pub mod user_repository;
 
 pub const MIGRATIONS: EmbeddedMigrations = embed_migrations!();
 
@@ -14,21 +14,22 @@ pub type PgPool = Pool<ConnectionManager<PgConnection>>;
 /// Call once and pass pool around
 pub fn init_pool(database_url: &str) -> Result<PgPool, r2d2::Error> {
     let manager = ConnectionManager::<PgConnection>::new(database_url);
-    Pool::builder()
-        .max_size(15)
-        .build(manager)
+    Pool::builder().max_size(15).build(manager)
 }
 
 /// Borrow a connection from the pool (blocking!!)
-pub fn get_conn(pool: &PgPool) -> Result<PooledConnection<ConnectionManager<PgConnection>>, r2d2::Error> {
+pub fn get_conn(
+    pool: &PgPool,
+) -> Result<PooledConnection<ConnectionManager<PgConnection>>, r2d2::Error> {
     pool.get()
 }
 
 /// Run pending database migrations
-pub fn run_migrations(conn: &mut PgConnection) -> Result<(), Box<dyn std::error::Error + Send + Sync>> {
+pub fn run_migrations(
+    conn: &mut PgConnection,
+) -> Result<(), Box<dyn std::error::Error + Send + Sync>> {
     conn.run_pending_migrations(MIGRATIONS).map(|_| ())
 }
-
 
 // The below code is not my own
 /// Bridge sync Diesel calls onto a blocking thread for async runtimes (Warp/Tokio).

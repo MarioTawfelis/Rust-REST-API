@@ -1,7 +1,7 @@
 use std::net::SocketAddr;
 
 use dotenv::dotenv;
-use firefleeb_api::db::{get_conn, init_pool, run_migrations, PgPool};
+use firefleeb_api::db::{PgPool, get_conn, init_pool, run_migrations};
 use firefleeb_api::routes::{
     cart_routes::cart_routes, handle_rejection, product_routes::product_routes,
     user_routes::user_routes,
@@ -49,7 +49,5 @@ fn run_pending_migrations(pool: &PgPool) {
 
 fn init_tracing() {
     let filter = EnvFilter::try_from_default_env().unwrap_or_else(|_| EnvFilter::new("info"));
-    let _ = tracing_subscriber::fmt()
-        .with_env_filter(filter)
-        .try_init();
+    let _ = tracing_subscriber::fmt().with_env_filter(filter).try_init();
 }

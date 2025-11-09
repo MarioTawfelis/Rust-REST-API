@@ -1,18 +1,15 @@
 use uuid::Uuid;
 
 use crate::db::product_repository;
-use crate::db::{with_conn, PgPool};
+use crate::db::{PgPool, with_conn};
 
 use crate::errors::AppError;
 
 use crate::errors::map_diesel_error;
 
-use crate::models::product::{NewProduct, UpdateProduct, Product};
+use crate::models::product::{NewProduct, Product, UpdateProduct};
 
-pub async fn create_product(
-    pool: PgPool,
-    new_product: NewProduct
-) -> Result<Product, AppError> {
+pub async fn create_product(pool: PgPool, new_product: NewProduct) -> Result<Product, AppError> {
     with_conn(pool, move |conn| {
         product_repository::create_product(conn, &new_product)
     })
@@ -20,10 +17,7 @@ pub async fn create_product(
     .map_err(map_diesel_error)
 }
 
-pub async fn get_product_by_id(
-    pool: PgPool,
-    product_id: Uuid,
-) -> Result<Product, AppError> {
+pub async fn get_product_by_id(pool: PgPool, product_id: Uuid) -> Result<Product, AppError> {
     let maybe_product = with_conn(pool, move |conn| {
         product_repository::get_product_by_id(conn, product_id)
     })
@@ -36,7 +30,7 @@ pub async fn get_product_by_id(
 pub async fn update_product(
     pool: PgPool,
     product_id: Uuid,
-    updated: UpdateProduct
+    updated: UpdateProduct,
 ) -> Result<Product, AppError> {
     with_conn(pool, move |conn| {
         product_repository::update_product(conn, product_id, &updated)
@@ -45,10 +39,7 @@ pub async fn update_product(
     .map_err(map_diesel_error)
 }
 
-pub async fn delete_product(
-    pool: PgPool,
-    product_id: Uuid,
-) -> Result<(), AppError> {
+pub async fn delete_product(pool: PgPool, product_id: Uuid) -> Result<(), AppError> {
     with_conn(pool, move |conn| {
         product_repository::delete_product(conn, product_id)
     })
@@ -62,4 +53,3 @@ pub async fn delete_product(
         }
     })
 }
-

@@ -1,16 +1,12 @@
-use crate::handlers::dtos::{CreateCartRequest, UpdateCartRequest, CartResponse};
-use crate::models::cart::{UpdateCart};
-use crate::services::cart_service;
-use crate::errors::AppError;
 use crate::db::PgPool;
-use warp::{Reply, reply};
+use crate::errors::AppError;
+use crate::handlers::dtos::{CartResponse, CreateCartRequest, UpdateCartRequest};
+use crate::models::cart::UpdateCart;
+use crate::services::cart_service;
 use uuid::Uuid;
+use warp::{Reply, reply};
 
-pub async fn create(
-    pool: PgPool,
-    req: CreateCartRequest
-) -> Result<impl Reply, AppError> {
-
+pub async fn create(pool: PgPool, req: CreateCartRequest) -> Result<impl Reply, AppError> {
     let cart = cart_service::create_default_cart(pool, req.user_id).await?;
     Ok(reply::json(&CartResponse::from(cart)))
 }
@@ -18,7 +14,7 @@ pub async fn create(
 pub async fn update(
     pool: PgPool,
     cart_id: Uuid,
-    req: UpdateCartRequest
+    req: UpdateCartRequest,
 ) -> Result<impl Reply, AppError> {
     let updated_cart = UpdateCart {
         cart_status: req.cart_status,

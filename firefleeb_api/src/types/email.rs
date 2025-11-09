@@ -1,16 +1,16 @@
-use serde::{Deserialize, Serialize};
 use regex::Regex;
-
+use serde::{Deserialize, Serialize};
 
 use diesel::deserialize::{self, FromSql};
-use diesel::serialize::{self, IsNull, Output, ToSql};
 use diesel::pg::{Pg, PgValue};
-use diesel::{FromSqlRow, AsExpression, QueryId};
+use diesel::serialize::{self, IsNull, Output, ToSql};
 use diesel::sql_types::Text;
+use diesel::{AsExpression, FromSqlRow, QueryId};
 use std::io::Write;
 
-
-#[derive(Debug, Clone, Serialize, Deserialize, Eq, PartialEq, Hash, FromSqlRow, AsExpression, QueryId)]
+#[derive(
+    Debug, Clone, Serialize, Deserialize, Eq, PartialEq, Hash, FromSqlRow, AsExpression, QueryId,
+)]
 #[diesel(sql_type = Text)]
 pub struct Email(String);
 
@@ -42,4 +42,3 @@ impl FromSql<Text, Pg> for Email {
         Email::parse(s).map_err(|e| e.into())
     }
 }
-

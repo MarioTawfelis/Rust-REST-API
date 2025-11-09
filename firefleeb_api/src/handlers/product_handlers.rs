@@ -1,15 +1,12 @@
-use crate::handlers::dtos::{CreateProductRequest, UpdateProductRequest, ProductResponse};
+use crate::db::PgPool;
+use crate::errors::AppError;
+use crate::handlers::dtos::{CreateProductRequest, ProductResponse, UpdateProductRequest};
 use crate::models::product::{NewProduct, UpdateProduct};
 use crate::services::product_service;
-use crate::errors::AppError;
-use crate::db::PgPool;
-use warp::{Reply, reply};
 use uuid::Uuid;
+use warp::{Reply, reply};
 
-pub async fn create(
-    pool: PgPool,
-    req: CreateProductRequest
-) -> Result<impl Reply, AppError> {
+pub async fn create(pool: PgPool, req: CreateProductRequest) -> Result<impl Reply, AppError> {
     let new_product = NewProduct {
         product_name: req.product_name,
         product_description: req.product_description,
@@ -24,7 +21,7 @@ pub async fn create(
 pub async fn update(
     pool: PgPool,
     product_id: Uuid,
-    req: UpdateProductRequest
+    req: UpdateProductRequest,
 ) -> Result<impl Reply, AppError> {
     let updated_product = UpdateProduct {
         product_name: req.product_name,

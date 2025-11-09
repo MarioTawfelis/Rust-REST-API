@@ -1,9 +1,9 @@
-pub mod user;
-pub mod product;
 pub mod cart;
 pub mod cart_item;
+pub mod product;
+pub mod user;
 
-pub use user::*;
-pub use product::*;
 pub use cart::*;
 pub use cart_item::*;
+pub use product::*;
+pub use user::*;

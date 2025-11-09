@@ -27,12 +27,12 @@ pub fn product_routes(
         .and(base.clone())
         .and(warp::path::param::<Uuid>())
         .and(with_pool(pool.clone()))
-            .and(json_body::<UpdateProductRequest>())
-            .and_then(|id, pool, req| async move {
-                product_handlers::update(pool, id, req)
-                    .await
-                    .map_err(warp::reject::custom)
-            });
+        .and(json_body::<UpdateProductRequest>())
+        .and_then(|id, pool, req| async move {
+            product_handlers::update(pool, id, req)
+                .await
+                .map_err(warp::reject::custom)
+        });
 
     // GET /products/:id
     let get_one = warp::get()
@@ -43,7 +43,6 @@ pub fn product_routes(
                 .await
                 .map_err(warp::reject::custom)
         });
-
 
     // DELETE /products/:id
     let delete = warp::delete()

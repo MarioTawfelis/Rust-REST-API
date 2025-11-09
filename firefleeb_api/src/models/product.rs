@@ -1,6 +1,6 @@
+use bigdecimal::BigDecimal;
 use chrono::{DateTime, Utc};
 use uuid::Uuid;
-use bigdecimal::BigDecimal;
 
 use diesel::prelude::*;
 use serde::{Deserialize, Serialize};

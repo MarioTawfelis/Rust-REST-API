@@ -1,8 +1,8 @@
 mod common;
 
-use common::setup_postgres;
 use bigdecimal::BigDecimal;
-use firefleeb_api::db::{get_conn, product_repository, PgPool};
+use common::setup_postgres;
+use firefleeb_api::db::{PgPool, get_conn, product_repository};
 use firefleeb_api::handlers::dtos::ProductResponse;
 use firefleeb_api::routes::{handle_rejection, product_routes::product_routes};
 use serde_json::json;
@@ -10,7 +10,9 @@ use std::str::FromStr;
 use uuid::Uuid;
 use warp::Filter;
 
-fn product_filter(pool: PgPool) -> impl Filter<Extract = (impl warp::Reply,), Error = std::convert::Infallible> + Clone {
+fn product_filter(
+    pool: PgPool,
+) -> impl Filter<Extract = (impl warp::Reply,), Error = std::convert::Infallible> + Clone {
     product_routes(pool).recover(handle_rejection)
 }
 
@@ -43,7 +45,8 @@ async fn create_and_get_product_round_trip() {
         .await;
 
     assert_eq!(fetch_resp.status(), 200);
-    let fetched: ProductResponse = serde_json::from_slice(fetch_resp.body()).expect("fetch response");
+    let fetched: ProductResponse =
+        serde_json::from_slice(fetch_resp.body()).expect("fetch response");
 
     assert_eq!(fetched.id, created.id);
     assert_eq!(fetched.product_name, "Route Coffee");
@@ -89,7 +92,10 @@ async fn update_product_via_route_overwrites_fields() {
 
     assert_eq!(updated.id, created.id);
     assert_eq!(updated.product_name, "Updated Widget");
-    assert_eq!(updated.product_description.as_deref(), Some("Second revision"));
+    assert_eq!(
+        updated.product_description.as_deref(),
+        Some("Second revision")
+    );
     assert_eq!(updated.stock, 9);
     let expected_price = BigDecimal::from_str("14.50").expect("decimal");
     assert_eq!(updated.price, expected_price);
@@ -125,8 +131,8 @@ async fn delete_product_removes_record() {
     assert_eq!(delete_resp.status(), 204);
 
     let mut conn = get_conn(&pool).expect("conn");
-    let db_record = product_repository::get_product_by_id(&mut conn, created.id)
-        .expect("db lookup");
+    let db_record =
+        product_repository::get_product_by_id(&mut conn, created.id).expect("db lookup");
     assert!(db_record.is_none());
 
     let fetch_resp = warp::test::request()

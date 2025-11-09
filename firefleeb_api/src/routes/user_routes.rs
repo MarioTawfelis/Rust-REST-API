@@ -2,7 +2,9 @@ use uuid::Uuid;
 use warp::{Filter, Rejection, Reply};
 
 use crate::db::PgPool;
-use crate::handlers::dtos::{CreateUserRequest, UpdateUserRequest, UpdatePasswordRequest, LoginRequest};
+use crate::handlers::dtos::{
+    CreateUserRequest, LoginRequest, UpdatePasswordRequest, UpdateUserRequest,
+};
 use crate::handlers::user_handlers;
 use crate::routes::{json_body, with_pool};
 
@@ -14,7 +16,7 @@ pub fn user_routes(
     // POST /users
     let create = warp::post()
         .and(base.clone())
-        .and(warp::path::end())   
+        .and(warp::path::end())
         .and(with_pool(pool.clone()))
         .and(json_body::<CreateUserRequest>())
         .and_then(|pool, req| async move {
@@ -27,14 +29,14 @@ pub fn user_routes(
     let update = warp::put()
         .and(base.clone())
         .and(warp::path::param::<Uuid>())
-        .and(warp::path::end())   
+        .and(warp::path::end())
         .and(with_pool(pool.clone()))
-            .and(json_body::<UpdateUserRequest>())
-            .and_then(|id, pool, req| async move {
-                user_handlers::update_user(pool, id, req)
-                    .await
-                    .map_err(warp::reject::custom)
-            });
+        .and(json_body::<UpdateUserRequest>())
+        .and_then(|id, pool, req| async move {
+            user_handlers::update_user(pool, id, req)
+                .await
+                .map_err(warp::reject::custom)
+        });
 
     // PUT /users/:id/password
     let update_password = warp::put()

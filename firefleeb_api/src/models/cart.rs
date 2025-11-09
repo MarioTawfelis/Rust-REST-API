@@ -1,13 +1,13 @@
 use core::str;
 
+use bigdecimal::BigDecimal;
 use chrono::{DateTime, Utc};
 use diesel::prelude::*;
 use serde::{Deserialize, Serialize};
 use uuid::Uuid;
-use bigdecimal::BigDecimal;
 
-use crate::schema::carts;
 use crate::models::user::User;
+use crate::schema::carts;
 
 #[derive(Debug, Queryable, Selectable, Identifiable, Associations, Serialize, Deserialize)]
 #[diesel(belongs_to(User))]

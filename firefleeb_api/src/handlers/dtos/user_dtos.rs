@@ -1,10 +1,9 @@
-use chrono::{DateTime, Utc};
-use uuid::Uuid;
 use crate::types::email::Email;
+use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
+use uuid::Uuid;
 
 use crate::models::user::User;
-
 
 #[derive(Debug, Deserialize)]
 pub struct CreateUserRequest {

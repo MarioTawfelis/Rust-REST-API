@@ -1,8 +1,8 @@
 mod common;
 use common::setup_postgres;
 
-use bcrypt::{hash, verify, DEFAULT_COST};
-use firefleeb_api::db::{get_conn};
+use bcrypt::{DEFAULT_COST, hash, verify};
+use firefleeb_api::db::get_conn;
 use firefleeb_api::db::user_repository;
 use firefleeb_api::models::user::{NewUser, UpdateUser, User};
 use firefleeb_api::types::email::Email;
@@ -19,12 +19,12 @@ fn create_and_get_user_by_email_successfully() {
     let password_hash = hash("validpassword", DEFAULT_COST).expect("hash password");
     let new_user = NewUser {
         email: email.clone(),
-        password_hash: password_hash
+        password_hash: password_hash,
     };
 
     // Test create_user
-    let created_user: User = user_repository::create_user(&mut conn, &new_user)
-        .expect("create user");
+    let created_user: User =
+        user_repository::create_user(&mut conn, &new_user).expect("create user");
     assert_eq!(created_user.email, email);
 
     // Test get_user_by_email
@@ -33,8 +33,6 @@ fn create_and_get_user_by_email_successfully() {
         .expect("user exists");
     assert_eq!(fetched_user.id, created_user.id);
     assert_eq!(fetched_user.email, created_user.email);
-
-
 }
 
 #[test]
@@ -57,14 +55,12 @@ fn update_user_reset_password_successfully() {
 
     let new_hash = hash("new-password-456", DEFAULT_COST).unwrap();
 
-
     let patch = UpdateUser {
         email: None,
         password_hash: Some(new_hash.clone()),
     };
 
-    let updated = user_repository::update_user(&mut conn, created.id, &patch)
-        .expect("update user");
+    let updated = user_repository::update_user(&mut conn, created.id, &patch).expect("update user");
 
     assert!(verify("new-password-456", &updated.password_hash).unwrap());
     assert!(!verify("old-password-123", &updated.password_hash).unwrap());

@@ -1,6 +1,6 @@
 use diesel::pg::PgConnection;
 use diesel::r2d2::{ConnectionManager, Pool};
-use testcontainers::{clients::Cli, GenericImage, RunnableImage};
+use testcontainers::{GenericImage, RunnableImage, clients::Cli};
 
 pub struct TestDb {
     pub pool: Pool<ConnectionManager<PgConnection>>,
@@ -24,7 +24,10 @@ pub fn setup_postgres() -> TestDb {
 
     // Resolve host port mapped to container's 5432
     let host_port = container.get_host_port_ipv4(5432);
-    let db_url = format!("postgres://postgres:password@127.0.0.1:{}/testdb", host_port);
+    let db_url = format!(
+        "postgres://postgres:password@127.0.0.1:{}/testdb",
+        host_port
+    );
 
     // Build pool using your db module
     let pool = firefleeb_api::db::init_pool(&db_url).expect("pool");
@@ -34,5 +37,8 @@ pub fn setup_postgres() -> TestDb {
         firefleeb_api::db::run_migrations(&mut conn).expect("migrations");
     }
 
-    TestDb { pool, _container: container }
+    TestDb {
+        pool,
+        _container: container,
+    }
 }
