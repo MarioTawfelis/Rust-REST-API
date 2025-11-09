@@ -52,12 +52,12 @@ pub async fn update_item(
         updates.quantity = Some(qty);
     }
 
-    if let Some(price) = updates.unit_price.as_ref() {
-        if price < &BigDecimal::zero() {
-            return Err(AppError::Validation(
-                "Unit price must be zero or greater".into(),
-            ));
-        }
+    if let Some(price) = updates.unit_price.as_ref()
+        && price < &BigDecimal::zero()
+    {
+        return Err(AppError::Validation(
+            "Unit price must be zero or greater".into(),
+        ));
     }
 
     with_conn(pool, move |conn| {
@@ -66,7 +66,7 @@ pub async fn update_item(
         Ok(item)
     })
     .await
-    .map(|item| Some(item))
+    .map(Some)
     .map_err(map_diesel_error)
 }
 

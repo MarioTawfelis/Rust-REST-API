@@ -9,11 +9,10 @@ use crate::routes::{json_body, with_pool};
 pub fn product_routes(
     pool: PgPool,
 ) -> impl Filter<Extract = (impl Reply,), Error = Rejection> + Clone {
-    let base = warp::path("products");
-
     // POST /products
     let create = warp::post()
-        .and(base.clone())
+        .and(warp::path("products"))
+        .and(warp::path::end())
         .and(with_pool(pool.clone()))
         .and(json_body::<CreateProductRequest>())
         .and_then(|pool, req| async move {
@@ -24,8 +23,9 @@ pub fn product_routes(
 
     // PUT /products/:id
     let update = warp::put()
-        .and(base.clone())
+        .and(warp::path("products"))
         .and(warp::path::param::<Uuid>())
+        .and(warp::path::end())
         .and(with_pool(pool.clone()))
         .and(json_body::<UpdateProductRequest>())
         .and_then(|id, pool, req| async move {
@@ -36,7 +36,11 @@ pub fn product_routes(
 
     // GET /products/:id
     let get_one = warp::get()
-        .and(base.clone().and(warp::path::param::<Uuid>()))
+        .and(
+            warp::path("products")
+                .and(warp::path::param::<Uuid>())
+                .and(warp::path::end()),
+        )
         .and(with_pool(pool.clone()))
         .and_then(|id, pool| async move {
             product_handlers::get(pool, id)
@@ -46,7 +50,11 @@ pub fn product_routes(
 
     // DELETE /products/:id
     let delete = warp::delete()
-        .and(base.and(warp::path::param::<Uuid>()))
+        .and(
+            warp::path("products")
+                .and(warp::path::param::<Uuid>())
+                .and(warp::path::end()),
+        )
         .and(with_pool(pool))
         .and_then(|id, pool| async move {
             product_handlers::delete(pool, id)
