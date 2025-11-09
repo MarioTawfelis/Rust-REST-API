@@ -19,7 +19,7 @@ fn create_and_get_user_by_email_successfully() {
     let password_hash = hash("validpassword", DEFAULT_COST).expect("hash password");
     let new_user = NewUser {
         email: email.clone(),
-        password_hash: password_hash,
+        password_hash,
     };
 
     // Test create_user
