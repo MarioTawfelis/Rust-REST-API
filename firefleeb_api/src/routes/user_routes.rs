@@ -26,8 +26,8 @@ pub fn user_routes(
     // PUT /users/:id
     let update = warp::put()
         .and(base.clone())
-        .and(warp::path::end())   
         .and(warp::path::param::<Uuid>())
+        .and(warp::path::end())   
         .and(with_pool(pool.clone()))
             .and(json_body::<UpdateUserRequest>())
             .and_then(|id, pool, req| async move {
