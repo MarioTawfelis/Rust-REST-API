@@ -31,6 +31,10 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-cargo-
 
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          components: rustfmt, clippy
+
       - name: cargo fmt
         run: cargo fmt --all -- --check
 
