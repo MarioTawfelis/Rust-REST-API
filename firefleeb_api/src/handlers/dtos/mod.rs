@@ -6,3 +6,6 @@ pub use cart_dtos::*;
 
 pub mod cart_item_dtos;
 pub use cart_item_dtos::*;
+
+pub mod user_dtos;
+pub use user_dtos::*;
