@@ -1,0 +1,10 @@
+/target
+/docker-compose.yml
+/.git
+/.github
+**/*.rs.bk
+*.log
+.env
+.env.*
+Dockerfile
+README.md
