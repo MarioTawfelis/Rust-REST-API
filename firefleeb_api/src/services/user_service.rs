@@ -60,13 +60,26 @@ pub async fn get_user_by_id(
     maybe_user.ok_or_else(|| AppError::NotFound("User not found".into()))
 }
 
-/// Forgot my password
+pub async fn update_user(
+    pool: PgPool,
+    user_id: Uuid,
+    update: UpdateUser
+) -> Result<User, AppError> {
+    let updated_user = with_conn(pool, move |conn| {
+        user_repository::update_user(conn, user_id, &update)
+    })
+    .await
+    .map_err(map_diesel_error)?;
+
+    Ok(updated_user)
+}
+
+// Reset Password
 pub async fn update_user_password(
     pool: PgPool,
     user_id: Uuid,
     old_password_plain: String,
     new_password_plain: String,
-    update: UpdateUser
 ) -> Result<User, AppError> {
     validate_password(&new_password_plain)?;
 
@@ -78,13 +91,17 @@ pub async fn update_user_password(
         return Err(AppError::Unauthorized("Invalid current password".into()));
     }
 
-    let updated_user = with_conn(pool, move |conn| {
-        user_repository::update_user(conn, user_id, &update)
-    })
-    .await
-    .map_err(map_diesel_error)?;
+    let new_password_hash = hash(&new_password_plain, DEFAULT_COST)
+        .map_err(|_| AppError::Internal("Failed to hash new password".into()))?;
 
-    Ok(updated_user)
+    let update = UpdateUser {
+        email: None,
+        password_hash: Some(new_password_hash),
+    };
+    
+    with_conn(pool, move |conn| user_repository::update_user(conn, user_id, &update))
+    .await
+    .map_err(map_diesel_error)
 }
 
 pub async fn delete_user(
