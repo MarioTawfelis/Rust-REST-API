@@ -1,5 +1,6 @@
 pub mod product_routes;
 pub mod cart_routes;
+pub mod user_routes;
 pub mod rejections;
 pub mod filters;
 
