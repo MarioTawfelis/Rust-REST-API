@@ -1,11 +1,10 @@
-use std::convert::Infallible;
-
 use uuid::Uuid;
 use warp::{Filter, Rejection, Reply};
 
 use crate::db::PgPool;
 use crate::handlers::dtos::{CreateProductRequest, UpdateProductRequest};
 use crate::handlers::product_handlers;
+use crate::routes::{json_body, with_pool};
 
 pub fn product_routes(
     pool: PgPool,
@@ -57,17 +56,4 @@ pub fn product_routes(
         });
 
     create.or(get_one).or(update).or(delete)
-}
-
-fn json_body<T: serde::de::DeserializeOwned + Send>() 
-    -> impl Filter<Extract = (T,), Error = Rejection> + Clone 
-{
-    warp::body::content_length_limit(16 * 1024)
-        .and(warp::body::json())
-}
-
-fn with_pool(
-    pool: PgPool,
-) -> impl Filter<Extract = (PgPool,), Error = Infallible> + Clone {
-    warp::any().map(move || pool.clone())
 }

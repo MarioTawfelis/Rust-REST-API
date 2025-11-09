@@ -17,6 +17,7 @@ diesel::table! {
         user_id -> Uuid,
         cart_status -> Text,
         created_at -> Nullable<Timestamptz>,
+        cart_total -> Numeric,
     }
 }
 

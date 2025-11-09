@@ -3,9 +3,9 @@ use diesel::r2d2::{ConnectionManager, Pool, PooledConnection};
 use diesel_migrations::{embed_migrations, EmbeddedMigrations, MigrationHarness};
 
 pub mod user_repository;
-pub use user_repository::*;
-
 pub mod product_repository;
+pub mod cart_repository;
+pub mod cart_item_repository;
 
 pub const MIGRATIONS: EmbeddedMigrations = embed_migrations!();
 
