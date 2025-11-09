@@ -41,6 +41,7 @@ pub fn user_routes(
         .and(base.clone())
         .and(warp::path("password-reset"))
         .and(warp::path::param::<Uuid>())
+        .and(warp::path::end())
         .and(with_pool(pool.clone()))
         .and(json_body::<UpdatePasswordRequest>())
         .and_then(|id, pool, req| async move {
@@ -53,6 +54,7 @@ pub fn user_routes(
     let login = warp::post()
         .and(base.clone())
         .and(warp::path("login"))
+        .and(warp::path::end())
         .and(with_pool(pool.clone()))
         .and(json_body::<LoginRequest>())
         .and_then(|pool, req| async move {
